@@ -2,24 +2,23 @@
 
 /**********************************************
  * Physics Simulation Module
- * Author Daniel A
- * Licence Open Source
+ * Author: Daniel A
+ * License: Open Source
  * Description: This module is responsible for simulating physics in 2D space.
  **********************************************/
 
-
 /*=============================================
     1. Vector2D Class
-    *========================================*/
+=============================================*/
 
 class Vector2D {
-    constructor(x, Y) {
+    constructor(x, y) {
         this.x = x
-        this.y = Y
+        this.y = y
     }
 
     add(v) {
-        return new Vector2D(this.x +v.x, this.y + v.y)
+        return new Vector2D(this.x + v.x, this.y + v.y)
     }
 
     subtract(v) {
@@ -50,34 +49,45 @@ class Vector2D {
     rotate(angle) {
         const cos = Math.cos(angle)
         const sin = Math.sin(angle)
-        return new Vector2D(this.x * cos - this.y * sin, this.x * sin + this.y * cos)
+        return new Vector2D(
+            this.x * cos - this.y * sin,
+            this.x * sin + this.y * cos
+        )
     }
 }
 
-
-
 /*=============================================
     2. Shape Classes
-    *========================================*/
+=============================================*/
 
+// Base Shape Class
 class Shape {
+    /**
+     * Creates a new Shape.
+     * @param {string} type - The type of the shape (e.g., 'circle', 'rectangle', 'polygon').
+     */
     constructor(type) {
         this.type = type
     }
 
-    calculateInertia(mass) {
-        throw new Error('calculatedInertia() must be implemented by subclasses')
+    /**
+     * Checks if a point is inside the shape.
+     * This method should be overridden by subclasses.
+     * @param {Vector2D} point - The point to check.
+     * @param {Vector2D} position - The position of the shape.
+     * @param {number} [angle=0] - The rotation angle of the shape in radians.
+     * @returns {boolean} True if the point is inside the shape.
+     */
+    containsPoint(point, position, angle = 0) {
+        throw new Error('containsPoint() must be implemented by subclasses')
     }
 }
 
+// Circle Class
 class Circle extends Shape {
     constructor(radius) {
         super('circle')
         this.radius = radius
-    }
-
-    calculateInertia(mass) {
-        return 0.5 * mass * this.radius * this.radius
     }
 
     containsPoint(point, position) {
@@ -86,15 +96,12 @@ class Circle extends Shape {
     }
 }
 
+// Rectangle Class
 class Rectangle extends Shape {
     constructor(width, height) {
         super('rectangle')
         this.width = width
         this.height = height
-    }
-
-    calculateInertia(mass) {
-        return (mass * (this.width ** 2 + this.height ** 2) / 12)
     }
 
     containsPoint(point, position, angle = 0) {
@@ -111,6 +118,7 @@ class Rectangle extends Shape {
     }
 }
 
+// Polygon Class
 class Polygon extends Shape {
     constructor(vertices) {
         super('polygon')
@@ -120,16 +128,10 @@ class Polygon extends Shape {
 
     calculateCentroid() {
         let centroid = new Vector2D(0, 0)
-        this.vertices.forEash((vertex) => {
+        this.vertices.forEach((vertex) => {
             centroid = centroid.add(vertex)
         })
         this.centroid = centroid.multiply(1 / this.vertices.length)
-    }
-
-    calculateInertia(mass) {
-        //placeholder for now...
-        //dont know yet how to calculate the inertia of a polygon
-        return mass
     }
 
     containsPoint(point, position, angle = 0) {
@@ -144,21 +146,19 @@ class Polygon extends Shape {
             const yj = this.vertices[j].y
 
             const intersect =
-                yi > localPoint.y !== yj > localPoint.y &&
-                localPoint.x < ((xj - xi) * (localPoint.y - yi)) / (yj - yi + 0.0001) + xi
+                (yi > localPoint.y) !== (yj > localPoint.y) &&
+                localPoint.x <
+                    ((xj - xi) * (localPoint.y - yi)) / (yj - yi + 0.0001) + xi
             if (intersect) isInside = !isInside
         }
 
-        return inside
-
-
+        return isInside
     }
 }
 
-
 /*=============================================
     3. RigidBody Class
-    *========================================*/
+=============================================*/
 
 class RigidBody {
     constructor(options) {
@@ -188,8 +188,8 @@ class RigidBody {
     }
 
     on(eventName, callback) {
-        if (!this.eventListeners[eventType]) this.eventListeners[eventType] = []
-        this.eventListeners[eventType].push(callback)
+        if (!this.eventListeners[eventName]) this.eventListeners[eventName] = []
+        this.eventListeners[eventName].push(callback)
     }
 
     emit(eventType, data) {
@@ -202,7 +202,7 @@ class RigidBody {
 
 /*=============================================
     4. PhysicsWorld Class
-    *========================================*/
+=============================================*/
 
 class PhysicsWorld {
     constructor() {
@@ -219,17 +219,20 @@ class PhysicsWorld {
     }
 
     step(deltaTime) {
+        // Apply gravity
         this.bodies.forEach((body) => {
-            if (!body,isStatic) {
+            if (!body.isStatic) {
                 const gravityForce = this.gravity.multiply(body.mass)
                 body.applyForce(gravityForce)
             }
         })
 
+        // Integrate motion
         this.bodies.forEach((body) => {
             body.integrate(deltaTime)
         })
 
+        // Handle collisions
         this.handleCollisions()
     }
 
@@ -266,12 +269,7 @@ class PhysicsWorld {
         if (typeA === 'rectangle' && typeB === 'rectangle') {
             return this.rectangleRectangleCollision(bodyA, bodyB)
         }
-        if (typeA === 'circle' && typeB === 'rectangle') {
-            return this.circleRectangleCollision(bodyA, bodyB)
-        }
-        if (typeA === 'rectangle' && typeB === 'circle') {
-            return this.circleRectangleCollision(bodyB, bodyA)
-        }
+        // Implement other collision methods as needed
 
         return null
     }
@@ -279,11 +277,11 @@ class PhysicsWorld {
     circleCircleCollision(bodyA, bodyB) {
         const diff = bodyB.position.subtract(bodyA.position)
         const distance = diff.magnitude()
-        const radiumSum = bodyA.shape.radius + bodyB.shape.radius
+        const radiusSum = bodyA.shape.radius + bodyB.shape.radius
 
-        if (distance < radiumSum) {
+        if (distance < radiusSum) {
             const normal = diff.normalize()
-            const penetration = radiumSum - distance
+            const penetration = radiusSum - distance
             return { normal, penetration }
         }
         return null
@@ -306,17 +304,26 @@ class PhysicsWorld {
             ay < by + bHeight &&
             ay + aHeight > by
         ) {
-
             const overlapX = Math.min(
+                ax + aWidth - bx,
+                bx + bWidth - ax
+            )
+            const overlapY = Math.min(
                 ay + aHeight - by,
                 by + bHeight - ay
             )
 
             if (overlapX < overlapY) {
-                const normal = new Vector2D(ax + aWidth / 2 < bx + bWidth / 2 ? -1 : 1, 0)
+                const normal = new Vector2D(
+                    ax + aWidth / 2 < bx + bWidth / 2 ? -1 : 1,
+                    0
+                )
                 return { normal, penetration: overlapX }
             } else {
-                const normal = new Vector2D(0, ay + aHeight / 2 < by + bHeight / 2 ? -1 : 1)
+                const normal = new Vector2D(
+                    0,
+                    ay + aHeight / 2 < by + bHeight / 2 ? -1 : 1
+                )
                 return { normal, penetration: overlapY }
             }
         }
@@ -333,6 +340,7 @@ class PhysicsWorld {
 
         if (!bodyA.isStatic) {
             bodyA.position = bodyA.position.add(moveA)
+        }
         if (!bodyB.isStatic) {
             bodyB.position = bodyB.position.add(moveB)
         }
@@ -351,12 +359,11 @@ class PhysicsWorld {
         if (!bodyA.isStatic) bodyA.velocity = bodyA.velocity.subtract(impulse.multiply(bodyA.invMass))
         if (!bodyB.isStatic) bodyB.velocity = bodyB.velocity.add(impulse.multiply(bodyB.invMass))
     }
-  }
 }
 
 /*=============================================
     5. Export Module
-    *========================================*/
+=============================================*/
 
 module.exports = {
     Vector2D,
