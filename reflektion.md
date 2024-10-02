@@ -23,3 +23,36 @@
 |                     | developers understand its purpose without|
 |                     | confusion.                               |
 |----------------------------------------------------------------|
+| `applyForce`        | - Use Verb Phrase Names for Methods      |
+|                     | - Use Consistent Verb Forms              |
+|                     |                                          |
+|                     | The method name applyForce is a verb     |
+|                     | phrase, indicating that it performs an   |
+|                     | action. It is consistent with other      |
+|                     | methods like applyImpulse so it is       |
+|                     | maintaining consistency in verb usage    |
+|                     | throughout the codebase. It enhances     |
+|                     | readibility and predictability.          |
+|----------------------------------------------------------------|
+| `containsPoint`     | - Use Intention-Revealing Names          |
+|                     | - Pick One Word per Concept              |
+|                     |                                          |
+|                     | containsPoint is a method that clearly   |
+|                     | states its functionality. By using the   |
+|                     | same method across different shape       |
+|                     | classes, it adheres to the principle of  |
+|                     | using one word per concept. It promotes  |
+|                     | consistency and reducing cognitive load  |
+|                     | for developers.                          |
+|----------------------------------------------------------------|
+| `PhysicsWorld`      | - Dont Add Gratuitous Context            |
+|                     | - Make Meaningful Distinction            |
+|                     |                                          |
+|                     | Even though PhysicsWorld provide context |
+|                     | the term "Physics" might be redundant    |
+|                     | since one might say that the module      |
+|                     | already implies physics concepts. So,    |
+|                     | according to "Don´t Add Gratuitous       |
+|                     | Context" shorter name like World might be|
+|                     | enough.                                  |
+|----------------------------------------------------------------|
