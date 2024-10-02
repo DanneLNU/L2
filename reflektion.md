@@ -56,3 +56,22 @@
 |                     | Context" shorter name like World might be|
 |                     | enough.                                  |
 |----------------------------------------------------------------|
+
+My own reflection: After reading Chapter 2 of the Clean Code I realized that meaningful names have
+profound impact on code clarity and maintainability. The chapter tells you that names that are well-chosen 
+act as effective documentation and thus reducing the need for excessive comments.
+
+In my module i tried to use intention-revealing names such as `Vector2d`, `RigidBody` and `applyForce` in a way
+that they immediately convey their purpose.
+
+I was also reflecting on the principle "Don´t Add Gratuitous Context" and was (as said before) thinking that my 
+`PhysicsWorld` might be unnecessarily verbose if the context is very clear. I might have just reduced it to the 
+`World` and make the code a bit cleaner.
+
+I was also making sure that the names accurately represented what they are to comply with the principle of
+"Avoid Disinformnation". 
+Also, i tried to use consistent terminology in names like `applyForce` and `applyImpulse` which aids in understanding 
+and predicting the behaviour of the code.
+
+
+# Code Quality Analysis Based on Chapter 3: *Meaningful Names* and my own reflections.
