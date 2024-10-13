@@ -83,6 +83,8 @@ function simulate() {
 // Start the simulation
 simulate();
 
+```
+
 
 Explanation: 
 
