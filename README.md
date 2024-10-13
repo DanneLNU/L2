@@ -93,6 +93,63 @@ Explanation:
 * RigidBody (Ground): A static body that the ball can collide with.
 * Simulation Loop: Steps the physics world forward and logs the ball´s position.
 
+### Example 2: Applying a Force to Move an Object
+
+This example demonstrates how to apply a force to a rigid body to simulate actions like throwing or pushing.
+```javascript
+
+// Import the physics module
+const {
+  Vector2D,
+  Rectangle,
+  RigidBody,
+  PhysicsWorld,
+} = require('./physics');
+
+// Create a physics world
+const world = new PhysicsWorld();
+world.gravity = new Vector2D(0, 9.8); // Set gravity
+
+// Create a box to be moved
+const box = new RigidBody({
+  position: new Vector2D(100, 100),
+  velocity: new Vector2D(0, 0),
+  mass: 2,
+  shape: new Rectangle(30, 30),
+  restitution: 0.2,
+});
+
+// Add the box to the world
+world.addBody(box);
+
+// Apply a force to the box (e.g., simulating a push)
+const pushForce = new Vector2D(200, -150); // Force vector
+box.applyForce(pushForce);
+
+// Simulation loop
+function simulate() {
+  const deltaTime = 1 / 60; // Time step
+
+  // Step the physics world
+  world.step(deltaTime);
+
+  // Log the box's position
+  console.log(`Box position: x=${box.position.x.toFixed(2)}, y=${box.position.y.toFixed(2)}`);
+
+  // Continue the simulation
+  setTimeout(simulate, deltaTime * 1000);
+}
+
+// Start the simulation
+simulate();
+```
+Explanation:
+* RigidBody (Box): Represents a box that can be moved by forces.
+* Applying Force: A force vector is applied to the box to simulate a push
+* PhysicsWorld: Gravity affects the box after the push.
+* Simulation Loop: Steps the physics world and logs the box´s position.
+
+
 
 ## Contributing
 Contributions are welcome! If you have suggestions, discover bugs, or wish to improve the module, please create a pull request or open an issue in the project's repository.
