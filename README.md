@@ -26,13 +26,67 @@ To use the module in your project, follow these steps:
    npm init -y
 
 
-## Reusability
-To reuse the module in your projects:
+## Examples
 
-**Modular Structure**: The module is structured for easy integration. You can import the classes you need and extend or modify them as necessary.
-**Extensibility**: Add your own shapes or extend existing classes to customize the module to your needs.
-**Event Handling**: Use the event system to integrate physics events with your game or application logic.
-**Integration with Rendering**: Connect the physics world with your rendering system to visually represent the simulation.
+1. **Example 1: Basic Physics Simulation with a Falling Ball**
+This example demonstrates how to create a simple physics simulation where a ball (circle) falls under gravity and bounces upon hitting the ground.
+
+// Import the physics module
+const {
+  Vector2D,
+  Circle,
+  Rectangle,
+  RigidBody,
+  PhysicsWorld,
+} = require('./physics');
+
+// Create a physics world
+const world = new PhysicsWorld();
+world.gravity = new Vector2D(0, 9.8); // Set gravity (downward force)
+
+// Create a ball using a circle shape
+const ball = new RigidBody({
+  position: new Vector2D(100, 0), // Starting at the top of the canvas
+  velocity: new Vector2D(0, 0),   // Initial velocity
+  mass: 1,                        // Mass of the ball
+  shape: new Circle(20),          // Radius of 20 units
+  restitution: 0.8,               // Bounciness (0 = no bounce, 1 = perfect bounce)
+});
+
+// Create the ground using a rectangle shape (static body)
+const ground = new RigidBody({
+  position: new Vector2D(0, 300), // Position at the bottom of the canvas
+  shape: new Rectangle(800, 50),  // Width and height of the ground
+  isStatic: true,                 // Static body (does not move)
+});
+
+// Add bodies to the world
+world.addBody(ball);
+world.addBody(ground);
+
+// Simulation loop
+function simulate() {
+  const deltaTime = 1 / 60; // Time step (1/60th of a second)
+
+  // Step the physics world
+  world.step(deltaTime);
+
+  // Log the ball's position
+  console.log(`Ball position: x=${ball.position.x.toFixed(2)}, y=${ball.position.y.toFixed(2)}`);
+
+  // Continue the simulation
+  setTimeout(simulate, deltaTime * 1000);
+}
+
+// Start the simulation
+simulate();
+
+Explanation: 
+
+* PhysicsWorld: Manages the simulation with gravity.
+* RigidBody (Ball): Represents the falling ball with mass, position and restitution for bouncing.
+* RigidBody (Ground): A static body that the ball can collide with.
+* Simulation Loop: Steps the physics world forward and logs the ball´s position.
 
 
 ## Contributing
