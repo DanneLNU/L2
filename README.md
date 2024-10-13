@@ -28,9 +28,11 @@ To use the module in your project, follow these steps:
 
 ## Examples
 
-1. **Example 1: Basic Physics Simulation with a Falling Ball**
+### Example 1: Basic Physics Simulation with a Falling Ball
+
 This example demonstrates how to create a simple physics simulation where a ball (circle) falls under gravity and bounces upon hitting the ground.
 
+```javascript
 // Import the physics module
 const {
   Vector2D,
@@ -80,6 +82,7 @@ function simulate() {
 
 // Start the simulation
 simulate();
+
 
 Explanation: 
 
